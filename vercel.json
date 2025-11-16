@@ -1,16 +1,10 @@
 {
     "version": 2,
-    "builds": [
-      {
-        "src": "dist/web-educativa-angular/browser/**/*",
-        "use": "@vercel/static"
-      }
-    ],
+    "buildCommand": "ng build --configuration production",
+    "outputDirectory": "dist/web-educativa-angular/browser",
     "routes": [
-      {
-        "src": "/(.*)",
-        "dest": "/index.html"
-      }
+      { "handle": "filesystem" },
+      { "src": "/(.*)", "dest": "/index.html" }
     ]
   }
   
