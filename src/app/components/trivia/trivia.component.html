@@ -1,0 +1,137 @@
+<section class="trivia-section">
+  <div class="trivia-container">
+    <div class="section-header">
+      <div class="badge">Pon a Prueba tus Conocimientos</div>
+      <h2 class="section-title">Trivia sobre Angular</h2>
+      <p class="section-subtitle">
+        Responde las preguntas y demuestra cuánto sabes sobre Angular. 
+        ¡Tienes 60 segundos por pregunta!
+      </p>
+    </div>
+
+    <div class="trivia-content" *ngIf="!triviaCompletada">
+      <!-- Estadísticas -->
+      <div class="stats-bar">
+        <div class="stat-item">
+          <span class="stat-label">Pregunta</span>
+          <span class="stat-value">{{ preguntaActual + 1 }} / {{ preguntas.length }}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Puntaje</span>
+          <span class="stat-value score">{{ puntaje }}</span>
+        </div>
+        <div class="stat-item timer" [class.warning]="tiempoRestante <= 15" [class.danger]="tiempoRestante <= 5">
+          <span class="stat-label">Tiempo</span>
+          <span class="stat-value">{{ tiempoRestante }}s</span>
+        </div>
+      </div>
+
+      <!-- Barra de progreso -->
+      <div class="progress-bar">
+        <div 
+          class="progress-fill" 
+          [style.width.%]="((preguntaActual + 1) / preguntas.length) * 100"
+        ></div>
+      </div>
+
+      <!-- Pregunta -->
+      <div class="pregunta-card">
+        <h3 class="pregunta-text">{{ preguntas[preguntaActual].pregunta }}</h3>
+        
+        <div class="opciones-container">
+          <button
+            *ngFor="let opcion of preguntas[preguntaActual].opciones; let i = index"
+            class="opcion-btn"
+            [class.correcta]="mostrarFeedback && esRespuestaCorrecta(i)"
+            [class.incorrecta]="mostrarFeedback && esRespuestaSeleccionada(i) && !esRespuestaCorrecta(i)"
+            [class.seleccionada]="esRespuestaSeleccionada(i)"
+            [class.disabled]="mostrarFeedback"
+            (click)="seleccionarRespuesta(i)"
+            [disabled]="mostrarFeedback"
+          >
+            <span class="opcion-indice">{{ getLetter(i) }}</span>
+            <span class="opcion-texto">{{ opcion }}</span>
+            <span class="opcion-icon" *ngIf="mostrarFeedback && esRespuestaCorrecta(i)">✓</span>
+            <span class="opcion-icon error" *ngIf="mostrarFeedback && esRespuestaSeleccionada(i) && !esRespuestaCorrecta(i)">✗</span>
+          </button>
+        </div>
+
+        <!-- Feedback -->
+        <div class="feedback-container" *ngIf="mostrarFeedback" [@slideIn]>
+          <div 
+            class="feedback-message"
+            [class.correct]="esRespuestaCorrecta(respuestaSeleccionada!)"
+            [class.incorrect]="!esRespuestaCorrecta(respuestaSeleccionada!)"
+          >
+            <div class="feedback-icon">
+              {{ esRespuestaCorrecta(respuestaSeleccionada!) ? '🎉' : '😔' }}
+            </div>
+            <div class="feedback-content">
+              <h4>
+                {{ esRespuestaCorrecta(respuestaSeleccionada!) ? '¡Correcto!' : 'Incorrecto' }}
+              </h4>
+              <p>{{ preguntas[preguntaActual].explicacion }}</p>
+            </div>
+          </div>
+          
+          <button class="btn-siguiente" (click)="siguientePregunta()">
+            {{ preguntaActual < preguntas.length - 1 ? 'Siguiente Pregunta' : 'Ver Resultados' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resultados Finales -->
+    <div class="resultados-container" *ngIf="triviaCompletada" [@fadeIn]>
+      <div class="resultados-card">
+        <div class="resultados-header">
+          <h2>¡Trivia Completada!</h2>
+          <div class="puntaje-final">
+            <span class="puntaje-numero">{{ puntaje }}</span>
+            <span class="puntaje-total">/ {{ preguntas.length * 10 }}</span>
+          </div>
+        </div>
+
+        <div class="resultados-stats">
+          <div class="resultado-item correct">
+            <span class="resultado-icon">✓</span>
+            <div class="resultado-info">
+              <span class="resultado-label">Correctas</span>
+              <span class="resultado-value">{{ respuestasCorrectas }}</span>
+            </div>
+          </div>
+          <div class="resultado-item incorrect">
+            <span class="resultado-icon">✗</span>
+            <div class="resultado-info">
+              <span class="resultado-label">Incorrectas</span>
+              <span class="resultado-value">{{ respuestasIncorrectas }}</span>
+            </div>
+          </div>
+          <div class="resultado-item total">
+            <span class="resultado-icon">📊</span>
+            <div class="resultado-info">
+              <span class="resultado-label">Total</span>
+              <span class="resultado-value">{{ preguntas.length }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="resultados-mensaje">
+          <p *ngIf="puntaje >= (preguntas.length * 10 * 0.8)">
+            🏆 ¡Excelente! Eres un experto en Angular.
+          </p>
+          <p *ngIf="puntaje >= (preguntas.length * 10 * 0.6) && puntaje < (preguntas.length * 10 * 0.8)">
+            👍 ¡Muy bien! Tienes buenos conocimientos de Angular.
+          </p>
+          <p *ngIf="puntaje < (preguntas.length * 10 * 0.6)">
+            💪 Sigue aprendiendo. ¡La práctica hace al maestro!
+          </p>
+        </div>
+
+        <button class="btn-reiniciar" (click)="reiniciarTrivia()">
+          🔄 Reiniciar Trivia
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

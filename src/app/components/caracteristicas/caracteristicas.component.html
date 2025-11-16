@@ -1,0 +1,28 @@
+<section class="caracteristicas-section">
+  <div class="caracteristicas-container">
+    <div class="section-header">
+      <div class="badge">Características y Ventajas</div>
+      <h2 class="section-title">¿Por qué elegir Angular?</h2>
+      <p class="section-subtitle">
+        Descubre las características que hacen de Angular una de las mejores opciones 
+        para desarrollar aplicaciones web modernas y escalables.
+      </p>
+    </div>
+    
+    <div class="caracteristicas-grid">
+      <div 
+        class="caracteristica-card" 
+        *ngFor="let caracteristica of caracteristicas; let i = index"
+        [style.animation-delay]="(i * 0.1) + 's'"
+      >
+        <div class="card-icon" [style.background]="caracteristica.color + '20'">
+          <span [style.color]="caracteristica.color">{{ caracteristica.icon }}</span>
+        </div>
+        <h3 class="card-title">{{ caracteristica.title }}</h3>
+        <p class="card-description">{{ caracteristica.description }}</p>
+        <div class="card-accent" [style.background]="caracteristica.color"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
